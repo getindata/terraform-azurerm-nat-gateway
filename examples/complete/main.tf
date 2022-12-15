@@ -6,6 +6,12 @@ module "resource_group" {
   location = var.location
 }
 
+module "vnet" {
+  source              = "github.com/Azure/terraform-azurerm-vnet?ref=3.0.0"
+  resource_group_name = module.resource_group.name
+  vnet_location       = module.resource_group.location
+}
+
 resource "azurerm_log_analytics_workspace" "this" {
   name                = module.this.id
   location            = module.resource_group.location
@@ -14,17 +20,18 @@ resource "azurerm_log_analytics_workspace" "this" {
   sku                 = "PerGB2018"
 }
 
-module "terraform_module_template" {
+module "nat_gateway" {
   source  = "../../"
   context = module.this.context
+
+  name = "example"
 
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
 
-  diagnostic_settings = {
-    enabled = true
-    logs_destinations_ids = [
-      azurerm_log_analytics_workspace.this.id
-    ]
+  subnet_ids = module.vnet.vnet_subnets
+
+  public_ip = {
+    count = 2
   }
 }

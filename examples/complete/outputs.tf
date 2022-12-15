@@ -1,4 +1,4 @@
-output "terraform_module_template" {
-  description = "Output of the template module"
-  value       = module.terraform_module_template
+output "nat_gateway" {
+  description = "Output of the NAT Gateway module"
+  value       = module.nat_gateway
 }
