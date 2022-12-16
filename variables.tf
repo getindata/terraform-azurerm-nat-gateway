@@ -34,7 +34,7 @@ variable "idle_timeout_in_minutes" {
 variable "zones" {
   description = "Specifies a list of Availability Zones in which this NAT Gateway should be located"
   type        = list(string)
-  default     = null
+  default     = []
 }
 
 variable "subnet_ids" {

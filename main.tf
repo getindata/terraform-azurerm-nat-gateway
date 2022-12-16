@@ -20,7 +20,7 @@ resource "azurerm_nat_gateway" "this" {
 resource "azurerm_subnet_nat_gateway_association" "this" {
   count = length(var.subnet_ids)
 
-  nat_gateway_id = one(azurerm_nat_gateway.this[*].id)
+  nat_gateway_id = one(azurerm_nat_gateway.this).id
   subnet_id      = var.subnet_ids[count.index]
 }
 
@@ -37,7 +37,7 @@ module "nat_gateway_public_ip" {
   attributes = [format("%02s", (count.index + 1))]
 
   allocation_method = var.public_ip.allocation_method
-  zones             = var.public_ip.zones
+  zones             = var.public_ip.zones == null ? var.zones : var.public_ip.zones
   ip_version        = var.public_ip.ip_version
   sku               = var.public_ip.sku
   sku_tier          = var.public_ip.sku_tier
@@ -48,21 +48,21 @@ module "nat_gateway_public_ip" {
 resource "azurerm_nat_gateway_public_ip_association" "provided" {
   count = length(var.public_ip_address_ids)
 
-  nat_gateway_id       = one(azurerm_nat_gateway.this[*].id)
+  nat_gateway_id       = one(azurerm_nat_gateway.this).id
   public_ip_address_id = var.public_ip_address_ids[count.index]
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "managed" {
   count = length(module.nat_gateway_public_ip[*].id)
 
-  nat_gateway_id       = one(azurerm_nat_gateway.this[*].id)
+  nat_gateway_id       = one(azurerm_nat_gateway.this).id
   public_ip_address_id = module.nat_gateway_public_ip[count.index].id
 }
 
 resource "azurerm_nat_gateway_public_ip_prefix_association" "provided" {
   count = length(var.public_ip_prefix_ids)
 
-  nat_gateway_id      = one(azurerm_nat_gateway.this[*].id)
+  nat_gateway_id      = one(azurerm_nat_gateway.this).id
   public_ip_prefix_id = var.public_ip_prefix_ids[count.index]
 }
 
@@ -72,6 +72,6 @@ module "diagnostic_settings" {
   source  = "claranet/diagnostic-settings/azurerm"
   version = "6.2.0"
 
-  resource_id           = one(azurerm_nat_gateway.this[*].id)
+  resource_id           = one(azurerm_nat_gateway.this).id
   logs_destinations_ids = var.diagnostic_settings.logs_destinations_ids
 }
