@@ -1,15 +1,10 @@
-# Terraform Azure Module Template
-
-
-> **Warning**:
-> This is a template document. Remember to **remove** all text in _italics_ and **update** Module name, Repo name and links/badges to the acual name of your GitHub repository/module!!!
+# Azure NAT Gateway Terraform Module
 
 ![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
-<!--- Replace repository name -->
-![License](https://badgen.net/github/license/getindata/terraform-azurerm-module-tempate/)
-![Release](https://badgen.net/github/release/getindata/terraform-azurerm-module-tempate/)
+![License](https://badgen.net/github/license/getindata/terraform-azurerm-nat-gateway/)
+![Release](https://badgen.net/github/release/getindata/terraform-azurerm-nat-gateway/)
 
 <p align="center">
   <img height="150" src="https://getindata.com/img/logo.svg">
@@ -18,27 +13,29 @@
 
 ---
 
-_Brief Description of MODULE:_
-
-* _What it does_
-* _What techonlogies it uses_
+Terraform module for managing an Azure NAT Gateway. 
+The module is also capable of creating related resources like Public IPs and subnet associations.  
 
 ## USAGE
 
-_Example usage of the module - terraform code snippet_
-
 ```terraform
 module "template" {
-  source = "github.com/getindata/terraform-azurerm-module-tempate"
+  source = "github.com/getindata/terraform-azurerm-nat-gateway"
+  
+  name = "example-nat-gw"
 
   location            = "West Europe"
   resource_group_name = "example-rg"
+
+  public_ip = {
+    count = 2
+    allocation_method = "Static"
+    ip_version        = "IPv4"
+    sku               = "Standard"
+    sku_tier          = "Global"
+  }
 }
 ```
-
-## NOTES
-
-_Additional information that should be made public, for ex. how to solve known issues, additional descriptions/suggestions_
 
 ## EXAMPLES
 
@@ -59,11 +56,12 @@ _Additional information that should be made public, for ex. how to solve known i
 | <a name="input_context"></a> [context](#input\_context) | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | `any` | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "descriptor_formats": {},<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_key_case": null,<br>  "label_order": [],<br>  "label_value_case": null,<br>  "labels_as_tags": [<br>    "unset"<br>  ],<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {},<br>  "tenant": null<br>}</pre> | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between ID elements.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | <a name="input_descriptor_formats"></a> [descriptor\_formats](#input\_descriptor\_formats) | Describe additional descriptors to be output in the `descriptors` output map.<br>Map of maps. Keys are names of descriptors. Values are maps of the form<br>`{<br>   format = string<br>   labels = list(string)<br>}`<br>(Type is `any` so the map values can later be enhanced to provide additional options.)<br>`format` is a Terraform format string to be passed to the `format()` function.<br>`labels` is a list of labels, in order, to pass to `format()` function.<br>Label values will be normalized before being passed to `format()` so they will be<br>identical to how they appear in `id`.<br>Default is `{}` (`descriptors` output will be empty). | `any` | `{}` | no |
-| <a name="input_descriptor_name"></a> [descriptor\_name](#input\_descriptor\_name) | Name of the descriptor used to form a resource name | `string` | `"azure-public-ip"` | no |
+| <a name="input_descriptor_name"></a> [descriptor\_name](#input\_descriptor\_name) | Name of the descriptor used to form a resource name | `string` | `"azure-nat-gateway"` | no |
 | <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings) | Enables diagnostics settings for a resource and streams the logs and metrics to any provided sinks | <pre>object({<br>    enabled               = optional(bool, false)<br>    logs_destinations_ids = optional(list(string), [])<br>  })</pre> | `{}` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | <a name="input_id_length_limit"></a> [id\_length\_limit](#input\_id\_length\_limit) | Limit `id` to this many characters (minimum 6).<br>Set to `0` for unlimited length.<br>Set to `null` for keep the existing setting, which defaults to `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
+| <a name="input_idle_timeout_in_minutes"></a> [idle\_timeout\_in\_minutes](#input\_idle\_timeout\_in\_minutes) | The idle timeout which should be used in minutes | `number` | `4` | no |
 | <a name="input_label_key_case"></a> [label\_key\_case](#input\_label\_key\_case) | Controls the letter case of the `tags` keys (label names) for tags generated by this module.<br>Does not affect keys of tags passed in via the `tags` input.<br>Possible values: `lower`, `title`, `upper`.<br>Default value: `title`. | `string` | `null` | no |
 | <a name="input_label_order"></a> [label\_order](#input\_label\_order) | The order in which the labels (ID elements) appear in the `id`.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 6 labels ("tenant" is the 6th), but at least one must be present. | `list(string)` | `null` | no |
 | <a name="input_label_value_case"></a> [label\_value\_case](#input\_label\_value\_case) | Controls the letter case of ID elements (labels) as included in `id`,<br>set as tag values, and output by this module individually.<br>Does not affect values of tags passed in via the `tags` input.<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Set this to `title` and set `delimiter` to `""` to yield Pascal Case IDs.<br>Default value: `lower`. | `string` | `null` | no |
@@ -71,17 +69,23 @@ _Additional information that should be made public, for ex. how to solve known i
 | <a name="input_location"></a> [location](#input\_location) | Location where resources will be deployed. If not provided it will be read from resource group location | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.<br>This is the only ID element not also included as a `tag`.<br>The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input. | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique | `string` | `null` | no |
+| <a name="input_public_ip"></a> [public\_ip](#input\_public\_ip) | Public IPs that will be created for the NAT Gateway | <pre>object({<br>    count             = optional(number, 0)<br>    allocation_method = optional(string, "Static")<br>    zones             = optional(list(string))<br>    ip_version        = optional(string)<br>    sku               = optional(string, "Standard")<br>    sku_tier          = optional(string)<br>  })</pre> | `{}` | no |
+| <a name="input_public_ip_address_ids"></a> [public\_ip\_address\_ids](#input\_public\_ip\_address\_ids) | List of Public IP IDs which will be associated with NAT Gateway | `list(string)` | `[]` | no |
+| <a name="input_public_ip_prefix_ids"></a> [public\_ip\_prefix\_ids](#input\_public\_ip\_prefix\_ids) | List of Public IP prefix IDs which will be associated with NAT Gateway | `list(string)` | `[]` | no |
 | <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Terraform regular expression (regex) string.<br>Characters matching the regex will be removed from the ID elements.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Azure resource group name where resources will be deployed | `string` | n/a | yes |
 | <a name="input_stage"></a> [stage](#input\_stage) | ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnet IDs which will be associated with NAT Gateway | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).<br>Neither the tag keys nor the tag values will be modified by this module. | `map(string)` | `{}` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | ID element \_(Rarely used, not included by default)\_. A customer identifier, indicating who this instance of a resource is for | `string` | `null` | no |
+| <a name="input_zones"></a> [zones](#input\_zones) | Specifies a list of Availability Zones in which this NAT Gateway should be located | `list(string)` | `[]` | no |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_diagnostic_settings"></a> [diagnostic\_settings](#module\_diagnostic\_settings) | claranet/diagnostic-settings/azurerm | 6.2.0 |
+| <a name="module_nat_gateway_public_ip"></a> [nat\_gateway\_public\_ip](#module\_nat\_gateway\_public\_ip) | getindata/public-ip/azurerm | 1.0.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 
 ## Outputs
@@ -90,6 +94,7 @@ _Additional information that should be made public, for ex. how to solve known i
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | ID of the resource |
 | <a name="output_name"></a> [name](#output\_name) | Name of the resource |
+| <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | Public IPs created for this NAT Gateway |
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | Name of the resource resource group |
 
 ## Providers
@@ -109,7 +114,11 @@ _Additional information that should be made public, for ex. how to solve known i
 
 | Name | Type |
 |------|------|
-| [azurerm_public_ip.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
+| [azurerm_nat_gateway.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway) | resource |
+| [azurerm_nat_gateway_public_ip_association.managed](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association) | resource |
+| [azurerm_nat_gateway_public_ip_association.provided](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association) | resource |
+| [azurerm_nat_gateway_public_ip_prefix_association.provided](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_prefix_association) | resource |
+| [azurerm_subnet_nat_gateway_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
 | [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 <!-- END_TF_DOCS -->
 
@@ -126,8 +135,8 @@ Apache 2 Licensed. See [LICENSE](LICENSE) for full details.
 ## AUTHORS
 
 <!--- Replace repository name -->
-<a href="https://github.com/getindata/terraform-azurerm-module-tempate/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=getindata/terraform-azurerm-module-tempate" />
+<a href="https://github.com/getindata/terraform-azurerm-nat-gateway/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=getindata/terraform-azurerm-nat-gateway" />
 </a>
 
 Made with [contrib.rocks](https://contrib.rocks).
