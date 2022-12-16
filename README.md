@@ -28,7 +28,7 @@ module "template" {
   resource_group_name = "example-rg"
 
   public_ip = {
-    count = 2
+    count             = 2
     allocation_method = "Static"
     ip_version        = "IPv4"
     sku               = "Standard"
@@ -57,7 +57,6 @@ module "template" {
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between ID elements.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | <a name="input_descriptor_formats"></a> [descriptor\_formats](#input\_descriptor\_formats) | Describe additional descriptors to be output in the `descriptors` output map.<br>Map of maps. Keys are names of descriptors. Values are maps of the form<br>`{<br>   format = string<br>   labels = list(string)<br>}`<br>(Type is `any` so the map values can later be enhanced to provide additional options.)<br>`format` is a Terraform format string to be passed to the `format()` function.<br>`labels` is a list of labels, in order, to pass to `format()` function.<br>Label values will be normalized before being passed to `format()` so they will be<br>identical to how they appear in `id`.<br>Default is `{}` (`descriptors` output will be empty). | `any` | `{}` | no |
 | <a name="input_descriptor_name"></a> [descriptor\_name](#input\_descriptor\_name) | Name of the descriptor used to form a resource name | `string` | `"azure-nat-gateway"` | no |
-| <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings) | Enables diagnostics settings for a resource and streams the logs and metrics to any provided sinks | <pre>object({<br>    enabled               = optional(bool, false)<br>    logs_destinations_ids = optional(list(string), [])<br>  })</pre> | `{}` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | <a name="input_id_length_limit"></a> [id\_length\_limit](#input\_id\_length\_limit) | Limit `id` to this many characters (minimum 6).<br>Set to `0` for unlimited length.<br>Set to `null` for keep the existing setting, which defaults to `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
@@ -69,7 +68,7 @@ module "template" {
 | <a name="input_location"></a> [location](#input\_location) | Location where resources will be deployed. If not provided it will be read from resource group location | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.<br>This is the only ID element not also included as a `tag`.<br>The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input. | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique | `string` | `null` | no |
-| <a name="input_public_ip"></a> [public\_ip](#input\_public\_ip) | Public IPs that will be created for the NAT Gateway | <pre>object({<br>    count             = optional(number, 0)<br>    allocation_method = optional(string, "Static")<br>    zones             = optional(list(string))<br>    ip_version        = optional(string)<br>    sku               = optional(string, "Standard")<br>    sku_tier          = optional(string)<br>  })</pre> | `{}` | no |
+| <a name="input_public_ip"></a> [public\_ip](#input\_public\_ip) | Public IPs that will be created for the NAT Gateway | <pre>object({<br>    count             = optional(number, 0)<br>    allocation_method = optional(string, "Static")<br>    zones             = optional(list(string))<br>    ip_version        = optional(string)<br>    sku               = optional(string, "Standard")<br>    sku_tier          = optional(string)<br>    diagnostic_settings = optional(object({<br>      enabled               = optional(bool, false)<br>      logs_destinations_ids = optional(list(string), [])<br>    }), {})<br>  })</pre> | `{}` | no |
 | <a name="input_public_ip_address_ids"></a> [public\_ip\_address\_ids](#input\_public\_ip\_address\_ids) | List of Public IP IDs which will be associated with NAT Gateway | `list(string)` | `[]` | no |
 | <a name="input_public_ip_prefix_ids"></a> [public\_ip\_prefix\_ids](#input\_public\_ip\_prefix\_ids) | List of Public IP prefix IDs which will be associated with NAT Gateway | `list(string)` | `[]` | no |
 | <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Terraform regular expression (regex) string.<br>Characters matching the regex will be removed from the ID elements.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
@@ -84,7 +83,6 @@ module "template" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_diagnostic_settings"></a> [diagnostic\_settings](#module\_diagnostic\_settings) | claranet/diagnostic-settings/azurerm | 6.2.0 |
 | <a name="module_nat_gateway_public_ip"></a> [nat\_gateway\_public\_ip](#module\_nat\_gateway\_public\_ip) | getindata/public-ip/azurerm | 1.0.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 
