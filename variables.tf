@@ -15,16 +15,6 @@ variable "descriptor_name" {
   default     = "azure-nat-gateway"
 }
 
-variable "diagnostic_settings" {
-  description = "Enables diagnostics settings for a resource and streams the logs and metrics to any provided sinks"
-  type = object({
-    enabled               = optional(bool, false)
-    logs_destinations_ids = optional(list(string), [])
-  })
-  default  = {}
-  nullable = false
-}
-
 variable "idle_timeout_in_minutes" {
   description = "The idle timeout which should be used in minutes"
   type        = number
@@ -64,6 +54,10 @@ variable "public_ip" {
     ip_version        = optional(string)
     sku               = optional(string, "Standard")
     sku_tier          = optional(string)
+    diagnostic_settings = optional(object({
+      enabled               = optional(bool, false)
+      logs_destinations_ids = optional(list(string), [])
+    }), {})
   })
   default  = {}
   nullable = false

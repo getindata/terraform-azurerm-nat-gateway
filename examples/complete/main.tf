@@ -33,5 +33,9 @@ module "nat_gateway" {
 
   public_ip = {
     count = 2
+    diagnostic_settings = {
+      enabled               = true
+      logs_destinations_ids = [azurerm_log_analytics_workspace.this.id]
+    }
   }
 }

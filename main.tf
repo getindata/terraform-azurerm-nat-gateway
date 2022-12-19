@@ -42,7 +42,7 @@ module "nat_gateway_public_ip" {
   sku               = var.public_ip.sku
   sku_tier          = var.public_ip.sku_tier
 
-  diagnostic_settings = var.diagnostic_settings
+  diagnostic_settings = var.public_ip.diagnostic_settings
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "provided" {
@@ -64,14 +64,4 @@ resource "azurerm_nat_gateway_public_ip_prefix_association" "provided" {
 
   nat_gateway_id      = one(azurerm_nat_gateway.this).id
   public_ip_prefix_id = var.public_ip_prefix_ids[count.index]
-}
-
-module "diagnostic_settings" {
-  count = module.this.enabled && var.diagnostic_settings.enabled != null ? 1 : 0
-
-  source  = "claranet/diagnostic-settings/azurerm"
-  version = "6.2.0"
-
-  resource_id           = one(azurerm_nat_gateway.this).id
-  logs_destinations_ids = var.diagnostic_settings.logs_destinations_ids
 }
