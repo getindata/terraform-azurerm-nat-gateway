@@ -34,7 +34,7 @@ module "nat_gateway_public_ip" {
   location            = local.location
   resource_group_name = local.resource_group_name
 
-  attributes = [format("%02s", (count.index + 1))]
+  attributes = ["nat-gw", format("%02s", (count.index + 1))]
 
   allocation_method = var.public_ip.allocation_method
   zones             = var.public_ip.zones == null ? var.zones : var.public_ip.zones
